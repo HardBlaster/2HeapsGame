@@ -48,6 +48,8 @@ public class Controller implements Initializable {
     @FXML
     private Pane winner_scene;
     @FXML
+    private Pane help_menu;
+    @FXML
     private TextField player1ID;
     @FXML
     private TextField player2ID;
@@ -85,8 +87,26 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void showHelp() {
+    private void goBack() {
+        help_menu.setVisible(false);
+        game_scene.setVisible(true);
+    }
 
+    @FXML
+    public void closeGame() {
+        System.exit(0);
+    }
+
+    @FXML
+    public void showMainMenu() {
+        winner_scene.setVisible(false);
+        main_menu.setVisible(true);
+    }
+
+    @FXML
+    public void showHelp() {
+        help_menu.setVisible(true);
+        game_scene.setVisible(false);
     }
 
     @FXML
@@ -240,5 +260,6 @@ public class Controller implements Initializable {
         game_scene.setVisible(false);
         input_pane.setVisible(false);
         winner_scene.setVisible(false);
+        help_menu.setVisible(false);
     }
 }
