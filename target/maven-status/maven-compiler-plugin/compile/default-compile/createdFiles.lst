@@ -1,0 +1,9 @@
+game/Main.class
+game/Controller.class
+game/Gamer$GamerBuilder.class
+database/DBTools.class
+guice/JpaInitializer.class
+database/GamerDao.class
+database/GenericJpaDao.class
+guice/PersistenceModule.class
+game/Gamer.class

@@ -1,5 +1,6 @@
-package sample;
+package game;
 
+import database.DBTools;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -187,8 +188,23 @@ public class Controller implements Initializable {
         }
 
         if(rocks1 == 0 && rocks2 == 0) {
-            if(!player2_status) winner.setText(playerID2);
-            else winner.setText(playerID1);
+            Gamer player1 = new Gamer();
+            Gamer player2 = new Gamer();
+
+            player1.setName(playerID1);
+            player2.setName(playerID2);
+
+            new DBTools().addGamer(player1);
+            new DBTools().addGamer(player2);
+
+            if(!player2_status) {
+                winner.setText(playerID2);
+                new DBTools().updateGamer(player2);
+            }
+            else {
+                winner.setText(playerID1);
+                new DBTools().updateGamer(player1);
+            }
 
             game_scene.setVisible(false);
             winner_scene.setVisible(true);
@@ -211,7 +227,7 @@ public class Controller implements Initializable {
             rocks2 = Integer.parseInt(input_rock2.getText());
         } catch (Exception ignored) {
         }
-        if (playerID1.equals("") || playerID2.equals("") || rocks1 == 0 || rocks2 == 0)
+        if (playerID1.equals("") || playerID2.equals("") || rocks1 == 0 || rocks2 == 0 || playerID1.equals(playerID2))
             error_message1.setVisible(true);
         else {
             player1.setText(playerID1);
@@ -263,3 +279,7 @@ public class Controller implements Initializable {
         help_menu.setVisible(false);
     }
 }
+
+
+
+

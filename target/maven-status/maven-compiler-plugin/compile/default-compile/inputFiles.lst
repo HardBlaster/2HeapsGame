@@ -1,8 +1,8 @@
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/sample/ScoreDao.java
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/jpa/GenericJpaDao.java
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/guice/PersistenceModule.java
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/sample/ScoreTest.java
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/sample/Score.java
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/guice/JpaInitializer.java
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/sample/Controller.java
-/home/bablan/Dokumentumok/swe/Projekt/src/main/java/sample/Main.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/guice/JpaInitializer.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/database/GamerDao.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/database/GenericJpaDao.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/database/DBTools.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/guice/PersistenceModule.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/game/Controller.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/game/Gamer.java
+/home/bablan/Letöltések/FoxCatcherFX/src/main/java/game/Main.java
