@@ -65,7 +65,7 @@
                 </Pane>
             </children>
         </AnchorPane>
-        <Pane id="main_menu" fx:id="main_menu" prefHeight="800.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Pane id="main_menu" fx:id="main_menu" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Button layoutX="225.0" layoutY="300.0" mnemonicParsing="false" onAction="#newGame" prefHeight="50.0" prefWidth="150.0" text="New game" />
                 <Button layoutX="225.0" layoutY="400.0" mnemonicParsing="false" onAction="#loadGame" prefHeight="50.0" prefWidth="150.0" text="Load game" />
@@ -94,7 +94,7 @@
                 <Button layoutX="336.0" layoutY="600.0" mnemonicParsing="false" onAction="#closeGame" prefHeight="50.0" prefWidth="180.0" text="Exit" />
             </children>
         </Pane>
-        <Pane id="help_menu" fx:id="help_menu" layoutX="263.0" layoutY="290.0" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Pane id="help_menu" fx:id="help_menu" layoutX="263.0" layoutY="290.0" prefHeight="800.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Label layoutX="30.0" layoutY="34.0" maxWidth="540.0" style="-fx-background-color: Lightblue;" text="Két kupacban kavicsok vannak. A játékosok felváltva vesznek el valamelyik kupacból tetszőleges számú kavicsot (de minimum 1-t), vagy mindkét kupacból azonos mennyiségű kavicsot (de minimum 1-1-t). Az a játékos nyer, aki az utolsó kavicsot elveszi. " textAlignment="JUSTIFY" wrapText="true">
                     <font>

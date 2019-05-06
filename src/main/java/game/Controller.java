@@ -1,6 +1,8 @@
 package game;
 
 import database.DBTools;
+import database.Gamer;
+import database.SaveGame;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -12,6 +14,7 @@ import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class Controller implements Initializable {
 
@@ -25,6 +28,7 @@ public class Controller implements Initializable {
     private static boolean heap2 = false;
     private static Glow selected = new Glow(1.7f);
     private static Glow not_selected = new Glow(0);
+    private static Logger log = Logger.getLogger(Controller.class.getName());
 
     @FXML
     private Label player1;
@@ -67,7 +71,17 @@ public class Controller implements Initializable {
 
     @FXML
     public void saveGame() {
+        SaveGame sg = new SaveGame();
 
+        sg.setPlayer1(player1.getText());
+        sg.setPlayer2(player2.getText());
+
+        sg.setRocks1(Integer.parseInt(rocks_in_heap1.getText()));
+        sg.setRocks2(Integer.parseInt(rocks_in_heap2.getText()));
+
+        new DBTools(sg).saveGame(sg);
+
+        log.info("The game has been saved successfully!");
     }
 
     @FXML
@@ -118,6 +132,8 @@ public class Controller implements Initializable {
             img_heap1.setEffect(selected);
         else
             img_heap1.setEffect(not_selected);
+
+        log.info("Heap1 status has been changed successfully!");
     }
 
     @FXML
@@ -128,6 +144,8 @@ public class Controller implements Initializable {
             img_heap2.setEffect(selected);
         else
             img_heap2.setEffect(not_selected);
+
+        log.info("Heap2 status has been changed successfully!");
     }
 
     @FXML
@@ -141,75 +159,98 @@ public class Controller implements Initializable {
 
         if (rock == 0) {
             showErrorMessage2("Invalid input number");
+            log.warning("The input data is not valid!");
         }
         else {
             if (heap1 && heap2) {
                 error_message2.setVisible(false);
 
-                if(rocks1 < rock || rocks2 < rock)
+                if(rocks1 < rock || rocks2 < rock) {
                     showErrorMessage2("Input number is too big");
+                    log.warning("The input number is too big!");
+                }
                 else {
                     rocks1 -= rock;
                     rocks2 -= rock;
                     rocks_in_heap1.setText(""+rocks1);
                     rocks_in_heap2.setText(""+rocks2);
                     changePlayer();
+
+                    log.info("Rocks taken successfully!");
                 }
             }
 
             if (!heap1 && heap2) {
                 error_message2.setVisible(false);
 
-                if(rocks2 < rock)
+                if(rocks2 < rock) {
                     showErrorMessage2("Input number is too big");
+                    log.warning("The input number is too big!");
+                }
                 else {
                     rocks2 -= rock;
                     rocks_in_heap2.setText("" + rocks2);
                     changePlayer();
+
+                    log.info("Rocks taken successfully!");
                 }
             }
 
             if (heap1 && !heap2) {
                 error_message2.setVisible(false);
 
-                if(rocks1 < rock)
+                if(rocks1 < rock) {
                     showErrorMessage2("Input number is too big");
+                    log.warning("The input number is too big!");
+                }
                 else {
                     rocks1 -= rock;
                     rocks_in_heap1.setText("" + rocks1);
                     changePlayer();
+
+                    log.info("Rocks taken successfully!");
                 }
             }
 
             if (!heap1 && !heap2) {
                 error_message2.setVisible(false);
                 showErrorMessage2("Choose at least one heap");
+
+                log.warning("No heaps chosen!");
             }
         }
 
+        isWinSituation();
+
+    }
+
+    private void isWinSituation() {
         if(rocks1 == 0 && rocks2 == 0) {
+            log.info("Winner situation!");
+
             Gamer player1 = new Gamer();
             Gamer player2 = new Gamer();
 
             player1.setName(playerID1);
             player2.setName(playerID2);
 
-            new DBTools().addGamer(player1);
-            new DBTools().addGamer(player2);
+            new DBTools(player1).addGamer(player1);
+            new DBTools(player2).addGamer(player2);
 
             if(!player2_status) {
                 winner.setText(playerID2);
-                new DBTools().updateGamer(player2);
+                new DBTools(player2).updateGamer(player2);
             }
             else {
                 winner.setText(playerID1);
-                new DBTools().updateGamer(player1);
+                new DBTools(player1).updateGamer(player1);
             }
+
+            log.info("Successful database update!");
 
             game_scene.setVisible(false);
             winner_scene.setVisible(true);
         }
-
     }
 
     @FXML
@@ -227,8 +268,10 @@ public class Controller implements Initializable {
             rocks2 = Integer.parseInt(input_rock2.getText());
         } catch (Exception ignored) {
         }
-        if (playerID1.equals("") || playerID2.equals("") || rocks1 == 0 || rocks2 == 0 || playerID1.equals(playerID2))
+        if (playerID1.equals("") || playerID2.equals("") || rocks1 == 0 || rocks2 == 0 || playerID1.equals(playerID2)) {
             error_message1.setVisible(true);
+            log.warning("The input data is not valid!");
+        }
         else {
             player1.setText(playerID1);
             player2.setText(playerID2);
@@ -237,6 +280,8 @@ public class Controller implements Initializable {
             rocks_in_heap2.setText("" + rocks2);
             input_pane.setVisible(false);
             game_scene.setVisible(true);
+
+            log.info("Input data has been saved successfully!");
         }
 
     }
@@ -277,6 +322,8 @@ public class Controller implements Initializable {
         input_pane.setVisible(false);
         winner_scene.setVisible(false);
         help_menu.setVisible(false);
+
+        log.info("The game has been initialized successfully!");
     }
 }
 

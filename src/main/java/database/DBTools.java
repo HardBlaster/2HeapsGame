@@ -4,19 +4,24 @@ import java.util.List;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import game.Gamer;
 import guice.PersistenceModule;
 
 
 public class DBTools {
 
-    public DBTools() {
-        Injector injector = Guice.createInjector(new PersistenceModule("test"));
+    public DBTools(Gamer tmp) {
+        Injector injector = Guice.createInjector(new PersistenceModule("Gamer"));
         gmd = injector.getInstance(GamerDao.class);
     }
 
-    private GamerDao gmd;
 
+    public DBTools(SaveGame tmp) {
+        Injector injector = Guice.createInjector(new PersistenceModule("SaveGame"));
+        sgd = injector.getInstance(SaveGameDao.class);
+    }
+
+    private SaveGameDao sgd;
+    private GamerDao gmd;
     private Gamer pgamer;
 
     public void addGamer(Gamer gamer) {
@@ -44,6 +49,23 @@ public class DBTools {
             gmd.update(pgamer);
 
         pgamer = null;
+    }
+
+    public void saveGame(SaveGame sg) {
+        sgd.persist(sg);
+    }
+
+    public SaveGame loadGame(int ID) {
+        SaveGame lg = new SaveGame();
+        List<SaveGame> list = sgd.findAll();
+
+        for(SaveGame sg : list)
+            if(sg.getId() == ID)
+                lg = sg;
+
+        sgd.remove(lg);
+
+        return lg;
     }
 
 }

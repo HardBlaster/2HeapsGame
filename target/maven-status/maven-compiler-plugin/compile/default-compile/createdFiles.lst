@@ -1,9 +1,12 @@
 game/Main.class
 game/Controller.class
-game/Gamer$GamerBuilder.class
+database/SaveGameDao.class
 database/DBTools.class
 guice/JpaInitializer.class
+database/Gamer$GamerBuilder.class
+database/SaveGame.class
 database/GamerDao.class
+database/SaveGame$SaveGameBuilder.class
 database/GenericJpaDao.class
+database/Gamer.class
 guice/PersistenceModule.class
-game/Gamer.class
