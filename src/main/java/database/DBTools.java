@@ -79,6 +79,10 @@ public class DBTools {
         return gmd.findAll().stream().sorted(Comparator.comparingInt(Gamer::getScore).reversed()).collect(Collectors.toList());
     }
 
+    public List<SaveGame> getSaves() {
+        return new ArrayList<>(sgd.findAll());
+    }
+
 }
 
 

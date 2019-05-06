@@ -18,7 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +63,8 @@ public class Controller implements Initializable {
     @FXML
     private Pane score_pane;
     @FXML
+    private Pane load_pane;
+    @FXML
     private TextField player1ID;
     @FXML
     private TextField player2ID;
@@ -82,6 +83,8 @@ public class Controller implements Initializable {
     @FXML
     private TableView<Gamer> scoreboard;
     @FXML
+    private TableView<SaveGame> sg_board;
+    @FXML
     private TableColumn<Gamer, String> id;
     @FXML
     private TableColumn<Gamer, String> name;
@@ -93,6 +96,14 @@ public class Controller implements Initializable {
     private TableColumn<Gamer, String> names;
     @FXML
     private TableColumn<Gamer, String> scores;
+    @FXML
+    private TableColumn<SaveGame, String> sg_player1;
+    @FXML
+    private TableColumn<SaveGame, String> sg_player2;
+    @FXML
+    private TableColumn<SaveGame, String> sg_heap1;
+    @FXML
+    private TableColumn<SaveGame, String> sg_heap2;
 
     @FXML
     public void saveGame() {
@@ -141,6 +152,7 @@ public class Controller implements Initializable {
     public void showMainMenu() {
         winner_scene.setVisible(false);
         score_pane.setVisible(false);
+        load_pane.setVisible(false);
         main_menu.setVisible(true);
     }
 
@@ -324,7 +336,40 @@ public class Controller implements Initializable {
 
     @FXML
     public void loadGame() {
+        main_menu.setVisible(false);
 
+        SaveGame sg = new SaveGame();
+        ObservableList<SaveGame> sgs = FXCollections.observableList(new DBTools(sg).getSaves());
+
+        sg_player1.setCellValueFactory(new PropertyValueFactory<>("player1"));
+        sg_player2.setCellValueFactory(new PropertyValueFactory<>("player2"));
+        sg_heap1.setCellValueFactory(new PropertyValueFactory<>("rocks1"));
+        sg_heap2.setCellValueFactory(new PropertyValueFactory<>("rocks2"));
+        sg_board.setItems(sgs);
+
+        load_pane.setVisible(true);
+    }
+
+    @FXML
+    public void loadSelectedGame() {
+        SaveGame selected = sg_board.getSelectionModel().getSelectedItem();
+
+        SaveGame selected2 = new DBTools(selected).loadGame(selected.getId());
+
+        playerID1 = selected2.getPlayer1();
+        playerID2 = selected2.getPlayer2();
+        rocks1 = selected2.getRocks1();
+        rocks2 = selected2.getRocks2();
+
+        player1.setText(playerID1);
+        player2.setText(playerID2);
+        player2.setVisible(false);
+        rocks_in_heap1.setText("" + rocks1);
+        rocks_in_heap2.setText("" + rocks2);
+        load_pane.setVisible(false);
+        game_scene.setVisible(true);
+
+        log.info("Game has been loaded successfully!");
     }
 
     @FXML
@@ -369,11 +414,8 @@ public class Controller implements Initializable {
         winner_scene.setVisible(false);
         help_menu.setVisible(false);
         score_pane.setVisible(false);
+        load_pane.setVisible(false);
 
         log.info("The game has been initialized successfully!");
     }
 }
-
-
-
-
