@@ -1,6 +1,9 @@
 package database;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -66,6 +69,14 @@ public class DBTools {
         sgd.remove(lg);
 
         return lg;
+    }
+
+    public List<Gamer> getTopPlayers() {
+        return gmd.findAll().stream().sorted(Comparator.comparingInt(Gamer::getScore).reversed()).limit(5).collect(Collectors.toList());
+    }
+
+    public List<Gamer> getScoreboard() {
+        return gmd.findAll().stream().sorted(Comparator.comparingInt(Gamer::getScore).reversed()).collect(Collectors.toList());
     }
 
 }

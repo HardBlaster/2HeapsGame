@@ -3,18 +3,25 @@ package game;
 import database.DBTools;
 import database.Gamer;
 import database.SaveGame;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Controller implements Initializable {
 
@@ -28,7 +35,7 @@ public class Controller implements Initializable {
     private static boolean heap2 = false;
     private static Glow selected = new Glow(1.7f);
     private static Glow not_selected = new Glow(0);
-    private static Logger log = Logger.getLogger(Controller.class.getName());
+    private static Logger log = LoggerFactory.getLogger(Controller.class);
 
     @FXML
     private Label player1;
@@ -55,6 +62,8 @@ public class Controller implements Initializable {
     @FXML
     private Pane help_menu;
     @FXML
+    private Pane score_pane;
+    @FXML
     private TextField player1ID;
     @FXML
     private TextField player2ID;
@@ -68,6 +77,22 @@ public class Controller implements Initializable {
     private ImageView img_heap1;
     @FXML
     private ImageView img_heap2;
+    @FXML
+    private TableView<Gamer> top_players;
+    @FXML
+    private TableView<Gamer> scoreboard;
+    @FXML
+    private TableColumn<Gamer, String> id;
+    @FXML
+    private TableColumn<Gamer, String> name;
+    @FXML
+    private TableColumn<Gamer, String> score;
+    @FXML
+    private TableColumn<Gamer, String> ids;
+    @FXML
+    private TableColumn<Gamer, String> names;
+    @FXML
+    private TableColumn<Gamer, String> scores;
 
     @FXML
     public void saveGame() {
@@ -115,6 +140,7 @@ public class Controller implements Initializable {
     @FXML
     public void showMainMenu() {
         winner_scene.setVisible(false);
+        score_pane.setVisible(false);
         main_menu.setVisible(true);
     }
 
@@ -155,11 +181,13 @@ public class Controller implements Initializable {
         int rock = 0;
         try {
             rock = Integer.parseInt(take_rocks.getText());
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            log.error("Not a number!");
+        }
 
         if (rock == 0) {
             showErrorMessage2("Invalid input number");
-            log.warning("The input data is not valid!");
+            log.warn("The input data is not valid!");
         }
         else {
             if (heap1 && heap2) {
@@ -167,7 +195,7 @@ public class Controller implements Initializable {
 
                 if(rocks1 < rock || rocks2 < rock) {
                     showErrorMessage2("Input number is too big");
-                    log.warning("The input number is too big!");
+                    log.warn("The input number is too big!");
                 }
                 else {
                     rocks1 -= rock;
@@ -185,7 +213,7 @@ public class Controller implements Initializable {
 
                 if(rocks2 < rock) {
                     showErrorMessage2("Input number is too big");
-                    log.warning("The input number is too big!");
+                    log.warn("The input number is too big!");
                 }
                 else {
                     rocks2 -= rock;
@@ -201,7 +229,7 @@ public class Controller implements Initializable {
 
                 if(rocks1 < rock) {
                     showErrorMessage2("Input number is too big");
-                    log.warning("The input number is too big!");
+                    log.warn("The input number is too big!");
                 }
                 else {
                     rocks1 -= rock;
@@ -216,7 +244,7 @@ public class Controller implements Initializable {
                 error_message2.setVisible(false);
                 showErrorMessage2("Choose at least one heap");
 
-                log.warning("No heaps chosen!");
+                log.warn("No heaps chosen!");
             }
         }
 
@@ -266,11 +294,12 @@ public class Controller implements Initializable {
             playerID2 = player2ID.getText();
             rocks1 = Integer.parseInt(input_rock1.getText());
             rocks2 = Integer.parseInt(input_rock2.getText());
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.error("Not a number!");
         }
         if (playerID1.equals("") || playerID2.equals("") || rocks1 == 0 || rocks2 == 0 || playerID1.equals(playerID2)) {
             error_message1.setVisible(true);
-            log.warning("The input data is not valid!");
+            log.warn("The input data is not valid!");
         }
         else {
             player1.setText(playerID1);
@@ -300,7 +329,16 @@ public class Controller implements Initializable {
 
     @FXML
     public void showLeaderboard() {
+        Gamer tmp = new Gamer();
+        ObservableList<Gamer> board = FXCollections.observableList(new DBTools(tmp).getScoreboard());
 
+        ids.setCellValueFactory(new PropertyValueFactory<>("id"));
+        names.setCellValueFactory(new PropertyValueFactory<>("name"));
+        scores.setCellValueFactory(new PropertyValueFactory<>("score"));
+        scoreboard.setItems(board);
+
+        main_menu.setVisible(false);
+        score_pane.setVisible(true);
     }
 
     private void changePlayer() {
@@ -317,11 +355,20 @@ public class Controller implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Gamer tmp = new Gamer();
+        ObservableList<Gamer> top = FXCollections.observableList(new DBTools(tmp).getTopPlayers());
+
+        id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        score.setCellValueFactory(new PropertyValueFactory<>("score"));
+        top_players.setItems(top);
+
         main_menu.setVisible(true);
         game_scene.setVisible(false);
         input_pane.setVisible(false);
         winner_scene.setVisible(false);
         help_menu.setVisible(false);
+        score_pane.setVisible(false);
 
         log.info("The game has been initialized successfully!");
     }
