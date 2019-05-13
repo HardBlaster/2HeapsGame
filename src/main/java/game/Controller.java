@@ -1,8 +1,8 @@
 package game;
 
-import database.DBTools;
-import database.Gamer;
-import database.SaveGame;
+import database.jpa.DBTools;
+import database.gamer.Gamer;
+import database.savegame.SaveGame;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,6 +35,10 @@ public class Controller implements Initializable {
     private static Glow selected = new Glow(1.7f);
     private static Glow not_selected = new Glow(0);
     private static Logger log = LoggerFactory.getLogger(Controller.class);
+    private Gamer tmp_gs;
+    private SaveGame tmp_sg;
+    private DBTools sg = new DBTools(tmp_sg);
+    private DBTools gs = new DBTools(tmp_gs);
 
     @FXML
     private Label player1;
@@ -107,15 +111,20 @@ public class Controller implements Initializable {
 
     @FXML
     public void saveGame() {
-        SaveGame sg = new SaveGame();
+        tmp_sg = new SaveGame();
 
-        sg.setPlayer1(player1.getText());
-        sg.setPlayer2(player2.getText());
+        tmp_sg.setPlayer1(player1.getText());
+        tmp_sg.setPlayer2(player2.getText());
 
-        sg.setRocks1(Integer.parseInt(rocks_in_heap1.getText()));
-        sg.setRocks2(Integer.parseInt(rocks_in_heap2.getText()));
+        tmp_sg.setRocks1(Integer.parseInt(rocks_in_heap1.getText()));
+        tmp_sg.setRocks2(Integer.parseInt(rocks_in_heap2.getText()));
 
-        new DBTools(sg).saveGame(sg);
+        if(player1_status)
+            tmp_sg.setActivePlayer(true);
+        else
+            tmp_sg.setActivePlayer(false);
+
+        sg.saveGame(tmp_sg);
 
         log.info("The game has been saved successfully!");
     }
@@ -264,26 +273,30 @@ public class Controller implements Initializable {
 
     }
 
+    private void refreshGamer(String winner, String looser) {
+        tmp_gs = new Gamer();
+
+        tmp_gs.setName(winner);
+        gs.addGamer(tmp_gs);
+        gs.updateGamer(tmp_gs);
+
+        tmp_gs.setName(looser);
+        gs.addGamer(tmp_gs);
+    }
+
     private void isWinSituation() {
         if(rocks1 == 0 && rocks2 == 0) {
             log.info("Winner situation!");
 
-            Gamer player1 = new Gamer();
-            Gamer player2 = new Gamer();
-
-            player1.setName(playerID1);
-            player2.setName(playerID2);
-
-            new DBTools(player1).addGamer(player1);
-            new DBTools(player2).addGamer(player2);
-
             if(!player2_status) {
                 winner.setText(playerID2);
-                new DBTools(player2).updateGamer(player2);
+
+                refreshGamer(playerID2, playerID1);
             }
             else {
                 winner.setText(playerID1);
-                new DBTools(player1).updateGamer(player1);
+
+                refreshGamer(playerID1, playerID2);
             }
 
             log.info("Successful database update!");
@@ -338,8 +351,8 @@ public class Controller implements Initializable {
     public void loadGame() {
         main_menu.setVisible(false);
 
-        SaveGame sg = new SaveGame();
-        ObservableList<SaveGame> sgs = FXCollections.observableList(new DBTools(sg).getSaves());
+        tmp_sg = new SaveGame();
+        ObservableList<SaveGame> sgs = FXCollections.observableList(sg.getSaves());
 
         sg_player1.setCellValueFactory(new PropertyValueFactory<>("player1"));
         sg_player2.setCellValueFactory(new PropertyValueFactory<>("player2"));
@@ -352,14 +365,21 @@ public class Controller implements Initializable {
 
     @FXML
     public void loadSelectedGame() {
-        SaveGame selected = sg_board.getSelectionModel().getSelectedItem();
+        SaveGame selected = sg.loadGame(sg_board.getSelectionModel().getSelectedItem().getId());
 
-        SaveGame selected2 = new DBTools(selected).loadGame(selected.getId());
+        playerID1 = selected.getPlayer1();
+        playerID2 = selected.getPlayer2();
+        rocks1 = selected.getRocks1();
+        rocks2 = selected.getRocks2();
+        if(selected.isActivePlayer()) {
+            player1_status = true;
+            player2_status = false;
+        }
+        else {
+            player1_status = false;
+            player2_status = true;
+        }
 
-        playerID1 = selected2.getPlayer1();
-        playerID2 = selected2.getPlayer2();
-        rocks1 = selected2.getRocks1();
-        rocks2 = selected2.getRocks2();
 
         player1.setText(playerID1);
         player2.setText(playerID2);
@@ -374,8 +394,7 @@ public class Controller implements Initializable {
 
     @FXML
     public void showLeaderboard() {
-        Gamer tmp = new Gamer();
-        ObservableList<Gamer> board = FXCollections.observableList(new DBTools(tmp).getScoreboard());
+        ObservableList<Gamer> board = FXCollections.observableList(gs.getScoreboard());
 
         ids.setCellValueFactory(new PropertyValueFactory<>("id"));
         names.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -400,8 +419,7 @@ public class Controller implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Gamer tmp = new Gamer();
-        ObservableList<Gamer> top = FXCollections.observableList(new DBTools(tmp).getTopPlayers());
+        ObservableList<Gamer> top = FXCollections.observableList(gs.getTopPlayers());
 
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
