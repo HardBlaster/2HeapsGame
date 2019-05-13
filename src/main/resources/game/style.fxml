@@ -16,7 +16,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.Controller">
     <children>
-        <AnchorPane id="game_scene" fx:id="game_scene" layoutX="201.0" layoutY="300.0" prefHeight="800.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane id="game_scene" fx:id="game_scene" layoutX="201.0" layoutY="300.0" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <MenuBar prefHeight="29.0" prefWidth="600.0">
                     <menus>
@@ -48,7 +48,7 @@
                 <Label id="error_message2" fx:id="error_message2" alignment="CENTER" layoutY="350.0" prefWidth="600.0" text="Error" textAlignment="CENTER" textFill="RED" visible="false" />
             </children>
         </AnchorPane>
-        <AnchorPane id="input_pane" fx:id="input_pane" layoutX="200.0" layoutY="300.0" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane id="input_pane" fx:id="input_pane" layoutX="200.0" layoutY="300.0" prefHeight="800.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Pane layoutX="200.0" layoutY="275.0" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>

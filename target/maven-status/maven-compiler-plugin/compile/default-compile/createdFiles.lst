@@ -1,6 +1,7 @@
 game/Controller.class
 game/MainClass.class
 database/savegame/SaveGame.class
+game/Runnable.class
 database/gamer/Gamer$GamerBuilder.class
 guice/JpaInitializer.class
 database/savegame/SaveGame$SaveGameBuilder.class
