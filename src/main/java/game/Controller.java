@@ -328,6 +328,10 @@ public class Controller implements Initializable {
             rocks_in_heap2.setText("" + rocks2);
             input_pane.setVisible(false);
             game_scene.setVisible(true);
+            player1.setVisible(true);
+            player2.setVisible(false);
+            player1_status = true;
+            player2_status = false;
 
             log.info("Input data has been saved successfully!");
         }
