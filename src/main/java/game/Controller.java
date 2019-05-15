@@ -19,22 +19,28 @@ import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Setter
+@Getter
 public class Controller implements Initializable {
 
-    private static String playerID1 = "";
-    private static String playerID2 = "";
-    private static boolean player1_status = true;
-    private static boolean player2_status = false;
-    private static int rocks1 = 0;
-    private static int rocks2 = 0;
-    private static boolean heap1 = false;
-    private static boolean heap2 = false;
+    static String playerID1 = "";
+    static String playerID2 = "";
+    static boolean player1_status = true;
+    static boolean player2_status = false;
+    static int rocks1 = 0;
+    static int rocks2 = 0;
+    static boolean heap1 = false;
+    static boolean heap2 = false;
     private static Glow selected = new Glow(1.7f);
     private static Glow not_selected = new Glow(0);
     private static Logger log = LoggerFactory.getLogger(Controller.class);
+    private Game game= new Game();
     private Gamer tmp_gs;
     private SaveGame tmp_sg;
     private DBTools sg = new DBTools(tmp_sg);
@@ -110,27 +116,14 @@ public class Controller implements Initializable {
     private TableColumn<SaveGame, String> sg_heap2;
 
     @FXML
-    public void saveGame() {
-        tmp_sg = new SaveGame();
-
-        tmp_sg.setPlayer1(player1.getText());
-        tmp_sg.setPlayer2(player2.getText());
-
-        tmp_sg.setRocks1(Integer.parseInt(rocks_in_heap1.getText()));
-        tmp_sg.setRocks2(Integer.parseInt(rocks_in_heap2.getText()));
-
-        if(player1_status)
-            tmp_sg.setActivePlayer(true);
-        else
-            tmp_sg.setActivePlayer(false);
-
-        sg.saveGame(tmp_sg);
+    private void saveGame() {
+        game.saveGame(playerID1, playerID2, rocks1, rocks2, player1_status);
 
         log.info("The game has been saved successfully!");
     }
 
     @FXML
-    public void exitGame() {
+    private void exitGame() {
         playerID1 = "";
         playerID2 = "";
         rocks1 = 0;
@@ -153,26 +146,28 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void closeGame() {
+    private void closeGame() {
         System.exit(0);
     }
 
     @FXML
-    public void showMainMenu() {
+    private void showMainMenu() {
         winner_scene.setVisible(false);
         score_pane.setVisible(false);
         load_pane.setVisible(false);
         main_menu.setVisible(true);
+
+        refreshTop();
     }
 
     @FXML
-    public void showHelp() {
+    private void showHelp() {
         help_menu.setVisible(true);
         game_scene.setVisible(false);
     }
 
     @FXML
-    public void activateHeap1() {
+    private void activateHeap1() {
         heap1 = !heap1;
 
         if(heap1)
@@ -184,7 +179,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void activateHeap2() {
+    private void activateHeap2() {
         heap2 = !heap2;
 
         if(heap2)
@@ -194,9 +189,27 @@ public class Controller implements Initializable {
 
         log.info("Heap2 status has been changed successfully!");
     }
+    
+    @FXML
+    private void bigNumberError() {
+        showErrorMessage2("Input number is too big");
+        log.warn("The input number is too big!");
+    }
 
     @FXML
-    public void takeRocks() {
+    private void refreshRocks() {
+        rocks_in_heap1.setText(""+rocks1);
+        rocks_in_heap2.setText(""+rocks2);
+    }
+
+    private void takeFromHeap(int th_heap, int num_of_rocks) {
+        game.takeFromHeap(th_heap, num_of_rocks);
+
+        refreshRocks();
+    }
+
+    @FXML
+    private void takeRocks() {
         error_message2.setVisible(false);
 
         int rock = 0;
@@ -214,17 +227,12 @@ public class Controller implements Initializable {
             if (heap1 && heap2) {
                 error_message2.setVisible(false);
 
-                if(rocks1 < rock || rocks2 < rock) {
-                    showErrorMessage2("Input number is too big");
-                    log.warn("The input number is too big!");
-                }
-                else {
-                    rocks1 -= rock;
-                    rocks2 -= rock;
-                    rocks_in_heap1.setText(""+rocks1);
-                    rocks_in_heap2.setText(""+rocks2);
-                    changePlayer();
+                if(rocks1 < rock || rocks2 < rock)
+                    bigNumberError();
 
+                else {
+                    takeFromHeap(0, rock);
+                    changePlayer();
                     log.info("Rocks taken successfully!");
                 }
             }
@@ -232,15 +240,12 @@ public class Controller implements Initializable {
             if (!heap1 && heap2) {
                 error_message2.setVisible(false);
 
-                if(rocks2 < rock) {
-                    showErrorMessage2("Input number is too big");
-                    log.warn("The input number is too big!");
-                }
-                else {
-                    rocks2 -= rock;
-                    rocks_in_heap2.setText("" + rocks2);
-                    changePlayer();
+                if(rocks2 < rock)
+                    bigNumberError();
 
+                else {
+                    takeFromHeap(2, rock);
+                    changePlayer();
                     log.info("Rocks taken successfully!");
                 }
             }
@@ -248,13 +253,11 @@ public class Controller implements Initializable {
             if (heap1 && !heap2) {
                 error_message2.setVisible(false);
 
-                if(rocks1 < rock) {
-                    showErrorMessage2("Input number is too big");
-                    log.warn("The input number is too big!");
-                }
+                if(rocks1 < rock)
+                    bigNumberError();
+
                 else {
-                    rocks1 -= rock;
-                    rocks_in_heap1.setText("" + rocks1);
+                    takeFromHeap(1, rock);
                     changePlayer();
 
                     log.info("Rocks taken successfully!");
@@ -273,17 +276,7 @@ public class Controller implements Initializable {
 
     }
 
-    private void refreshGamer(String winner, String looser) {
-        tmp_gs = new Gamer();
-
-        tmp_gs.setName(winner);
-        gs.addGamer(tmp_gs);
-        gs.updateGamer(tmp_gs);
-
-        tmp_gs.setName(looser);
-        gs.addGamer(tmp_gs);
-    }
-
+    @FXML
     private void isWinSituation() {
         if(rocks1 == 0 && rocks2 == 0) {
             log.info("Winner situation!");
@@ -291,12 +284,12 @@ public class Controller implements Initializable {
             if(!player2_status) {
                 winner.setText(playerID2);
 
-                refreshGamer(playerID2, playerID1);
+                game.refreshGamer(playerID2, playerID1);
             }
             else {
                 winner.setText(playerID1);
 
-                refreshGamer(playerID1, playerID2);
+                game.refreshGamer(playerID1, playerID2);
             }
 
             log.info("Successful database update!");
@@ -304,16 +297,17 @@ public class Controller implements Initializable {
             game_scene.setVisible(false);
             winner_scene.setVisible(true);
         }
+
     }
 
     @FXML
-    public void newGame() {
+    private void newGame() {
         input_pane.setVisible(true);
         main_menu.setVisible(false);
     }
 
     @FXML
-    public void saveInputData() {
+    private void saveInputData() {
         try {
             playerID1 = player1ID.getText();
             playerID2 = player2ID.getText();
@@ -341,14 +335,14 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void cancelNewGame() {
+    private void cancelNewGame() {
         input_pane.setVisible(false);
         error_message1.setVisible(false);
         main_menu.setVisible(true);
     }
 
     @FXML
-    public void loadGame() {
+    private void loadGame() {
         main_menu.setVisible(false);
 
         tmp_sg = new SaveGame();
@@ -364,28 +358,20 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void loadSelectedGame() {
+    private void loadSelectedGame() {
         SaveGame selected = sg.loadGame(sg_board.getSelectionModel().getSelectedItem().getId());
 
-        playerID1 = selected.getPlayer1();
-        playerID2 = selected.getPlayer2();
-        rocks1 = selected.getRocks1();
-        rocks2 = selected.getRocks2();
-        if(selected.isActivePlayer()) {
-            player1_status = true;
-            player2_status = false;
-        }
-        else {
-            player1_status = false;
-            player2_status = true;
-        }
-
+        game.loadSelectedGame(selected);
 
         player1.setText(playerID1);
         player2.setText(playerID2);
-        player2.setVisible(false);
+        player1.setVisible(player1_status);
+        player2.setVisible(player2_status);
         rocks_in_heap1.setText("" + rocks1);
         rocks_in_heap2.setText("" + rocks2);
+        img_heap1.setEffect(not_selected);
+        img_heap2.setEffect(not_selected);
+        take_rocks.clear();
         load_pane.setVisible(false);
         game_scene.setVisible(true);
 
@@ -393,7 +379,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void showLeaderboard() {
+    private void showLeaderboard() {
         ObservableList<Gamer> board = FXCollections.observableList(gs.getScoreboard());
 
         ids.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -405,6 +391,7 @@ public class Controller implements Initializable {
         score_pane.setVisible(true);
     }
 
+    @FXML
     private void changePlayer() {
         player1_status = !player1_status;
         player2_status = !player2_status;
@@ -413,18 +400,25 @@ public class Controller implements Initializable {
         player2.setVisible(player2_status);
     }
 
+    @FXML
     private void showErrorMessage2(String message) {
         error_message2.setText(message);
         error_message2.setVisible(true);
     }
 
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    @FXML
+    private void refreshTop() {
         ObservableList<Gamer> top = FXCollections.observableList(gs.getTopPlayers());
 
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
         top_players.setItems(top);
+    }
+
+    @FXML
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        refreshTop();
 
         main_menu.setVisible(true);
         game_scene.setVisible(false);

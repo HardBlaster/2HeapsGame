@@ -16,7 +16,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.Controller">
     <children>
-        <AnchorPane id="game_scene" fx:id="game_scene" layoutX="201.0" layoutY="300.0" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane id="game_scene" fx:id="game_scene" layoutX="201.0" layoutY="300.0" prefHeight="800.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <MenuBar prefHeight="29.0" prefWidth="600.0">
                     <menus>
@@ -67,7 +67,7 @@
                 </Pane>
             </children>
         </AnchorPane>
-        <Pane id="main_menu" fx:id="main_menu" prefHeight="800.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Pane id="main_menu" fx:id="main_menu" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Button layoutX="225.0" layoutY="300.0" mnemonicParsing="false" onAction="#newGame" prefHeight="50.0" prefWidth="150.0" text="New game" />
                 <Button layoutX="225.0" layoutY="400.0" mnemonicParsing="false" onAction="#loadGame" prefHeight="50.0" prefWidth="150.0" text="Load game" />
@@ -78,7 +78,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <TableView id="top_players" fx:id="top_players" layoutX="150.0" layoutY="55.0" prefHeight="145.0" prefWidth="300.0">
+            <TableView id="top_players" fx:id="top_players" layoutX="150.0" layoutY="55.0" prefHeight="148.0" prefWidth="300.0">
               <columns>
                 <TableColumn id="id" fx:id="id" editable="false" maxWidth="1500.0" prefWidth="49.0" sortable="false" text="ID" />
                 <TableColumn id="name" fx:id="name" editable="false" prefWidth="149.0" sortable="false" text="Player" />

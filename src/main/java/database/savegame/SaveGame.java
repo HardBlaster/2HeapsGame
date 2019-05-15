@@ -20,6 +20,9 @@ import javax.persistence.Id;
 @Entity
 public class SaveGame {
 
+    /**
+     * The generated ID of the saved game.
+     */
     @GeneratedValue
     @Id
     private int id;

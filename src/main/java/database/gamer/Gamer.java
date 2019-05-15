@@ -20,6 +20,9 @@ import javax.persistence.Id;
 @Entity
 public class Gamer {
 
+    /**
+     * The generated ID of the player.
+     */
     @GeneratedValue
     @Id
     private int id;
