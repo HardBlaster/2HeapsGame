@@ -71,6 +71,16 @@ class Game {
     }
 
     /**
+     * Decides if it is a winner situation or not.
+     * @param rock1 amount of rocks in the first heap.
+     * @param rock2 amount of rocks in the second heap.
+     * @return a boolean value, {@code true} if winner situation, {@code false} if not winner situation.
+     */
+    boolean isWinSituation(int rock1, int rock2) {
+        return rock1 == 0 && rock2 == 0;
+    }
+
+    /**
      * Ads {@code Gamer} object to the table with {@code addGamer(Gamer gamer)} function,
      * then updates the winner with {@code updateGamer(Gamer gamer)} function.
      * @param winner the name of the player, which won the game.

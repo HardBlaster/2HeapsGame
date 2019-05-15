@@ -278,7 +278,7 @@ public class Controller implements Initializable {
 
     @FXML
     private void isWinSituation() {
-        if(rocks1 == 0 && rocks2 == 0) {
+        if(game.isWinSituation(rocks1, rocks2)) {
             log.info("Winner situation!");
 
             if(!player2_status) {
