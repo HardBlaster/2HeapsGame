@@ -20,13 +20,9 @@ import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-@Setter
-@Getter
+@Slf4j
 public class Controller implements Initializable {
 
     static String playerID1 = "";
@@ -39,7 +35,6 @@ public class Controller implements Initializable {
     static boolean heap2 = false;
     private static Glow selected = new Glow(1.7f);
     private static Glow not_selected = new Glow(0);
-    private static Logger log = LoggerFactory.getLogger(Controller.class);
     private Game game= new Game();
     private Gamer tmp_gs;
     private SaveGame tmp_sg;
